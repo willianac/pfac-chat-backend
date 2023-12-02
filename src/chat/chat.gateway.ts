@@ -1,23 +1,34 @@
-/* eslint-disable prettier/prettier */
-import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
+import {
+	WebSocketGateway,
+	WebSocketServer,
+	OnGatewayConnection,
+	OnGatewayDisconnect,
+	SubscribeMessage,
+	MessageBody,
+	ConnectedSocket,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: true })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
-  @WebSocketServer()
-  server: Server;
+export class ChatGateway implements OnGatewayDisconnect {
+	@WebSocketServer()
+	server: Server;
 
 	handleConnection(client: any) {
-    console.log("conectou")
-  }
+		console.log(client.handshake.auth.userid);
+	}
 
-  handleDisconnect(client: any) {
-    // Handle disconnection event
-  }
+	handleDisconnect(client: any) {
+		console.log('desconectou');
+	}
 
 	@SubscribeMessage('message')
-  handleMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    console.log(data)
-    return "chegou"
-  }
+	handleMessage(
+		@MessageBody() data: string,
+		@ConnectedSocket() client: Socket,
+	) {
+		console.log(data);
+		this.server.emit("message", "eu, server, recebi isso:" + data);
+		return data
+	}
 }

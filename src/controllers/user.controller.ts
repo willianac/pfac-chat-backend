@@ -1,29 +1,39 @@
-/* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UserService } from 'src/services/user.service';
 
 @Controller()
 export class UserController {
-  constructor(private userService: UserService) {}
+	constructor(private userService: UserService) {}
 
-  @Get('user/:id')
-  getUserById(@Param('id') id: string) {
-    return this.userService.user({ id: id });
-  }
+	@Post('signin')
+	login(@Body() userData: { email: string; password: string }) {
+		const { email, password } = userData;
 
-	@Post('user')
-  createUser(@Body() userData: { email: string; name: string; hash: string }) {
-		const { email, name, hash } = userData
+		return this.userService.login({ email, hash: password });
+	}
 
-		return this.userService.createUser({
-			email,
-			hash,
-			name
-		})
+	@Post('signup')
+	createUser(
+		@Body() userData: { email: string; name: string; password: string },
+	) {
+		const { email, name, password } = userData;
+		try {
+			return this.userService.createUser({
+				email,
+				hash: password,
+				name,
+			});
+		} catch (error) {
+			return error;
+		}
 	}
 
 	@Get('users')
 	getUsers() {
-		return this.userService.findAll()
+		try {
+			return this.userService.getUsers();
+		} catch (error) {
+			return error;
+		}
 	}
 }

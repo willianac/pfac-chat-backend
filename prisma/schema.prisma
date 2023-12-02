@@ -40,6 +40,7 @@ model Message {
   receiver     User    @relation(name: "Receiver", fields: [receiver_id], references: [id])
   receiver_id  String
   text         String
+	createdAt		 DateTime @default(now())
 
   @@unique([sender_id, receiver_id, text])
 }
