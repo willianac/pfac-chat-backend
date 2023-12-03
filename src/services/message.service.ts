@@ -41,6 +41,18 @@ export class MessageService {
 				sender_id: getMessages.senderId,
 				receiver_id: getMessages.receiverId,
 			},
+			include: {
+				sender: {
+					select: {
+						name: true,
+					},
+				},
+				receiver: {
+					select: {
+						name: true,
+					},
+				},
+			},
 		});
 
 		return messages;
