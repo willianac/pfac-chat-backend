@@ -12,7 +12,7 @@ import { PrismaService } from 'src/prisma.service';
 import { MessageService } from 'src/services/message.service';
 
 @WebSocketGateway({ cors: true })
-export class ChatGateway implements OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	constructor(
 		private messageService: MessageService,
 		private prismaService: PrismaService,
@@ -25,7 +25,7 @@ export class ChatGateway implements OnGatewayDisconnect {
 		console.log('conectou');
 	}
 
-	handleDisconnect(client: any) {
+	handleDisconnect(client: Socket) {
 		console.log('desconectou');
 	}
 
@@ -50,6 +50,7 @@ export class ChatGateway implements OnGatewayDisconnect {
 			...message,
 			sender: {
 				name: sender.name,
+				profile_url: sender.profile_url,
 			},
 		});
 		return data;

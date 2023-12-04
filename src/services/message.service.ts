@@ -53,6 +53,7 @@ export class MessageService {
 				sender: {
 					select: {
 						name: true,
+						profile_url: true,
 					},
 				},
 				receiver: {
