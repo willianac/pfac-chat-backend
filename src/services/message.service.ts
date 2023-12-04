@@ -38,8 +38,16 @@ export class MessageService {
 	async getChatMessages(getMessages: GetChatMessagesDTO) {
 		const messages = await this.prisma.message.findMany({
 			where: {
-				sender_id: getMessages.senderId,
-				receiver_id: getMessages.receiverId,
+				OR: [
+					{
+						sender_id: getMessages.senderId,
+						receiver_id: getMessages.receiverId,
+					},
+					{
+						sender_id: getMessages.receiverId,
+						receiver_id: getMessages.senderId,
+					},
+				],
 			},
 			include: {
 				sender: {
