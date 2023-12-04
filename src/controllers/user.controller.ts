@@ -5,26 +5,42 @@ import {
 	Post,
 	UploadedFile,
 	UseInterceptors,
+	UsePipes,
 } from '@nestjs/common';
+import { ZodValidationPipe, createZodDto } from 'nestjs-zod';
+import { z } from 'nestjs-zod/z';
 import { FileInterceptor } from '@nestjs/platform-express';
 import multerConfig from 'src/configs/multer-config';
 import { UserService } from 'src/services/user.service';
+
+const SignInSchema = z.object({
+	email: z.string().email(),
+	password: z.string().min(2),
+});
+
+const SignUpSchema = z.object({
+	email: z.string().email(),
+	name: z.string().min(2),
+	password: z.string().min(2),
+});
+
+class SignInDTO extends createZodDto(SignInSchema) {}
+class SignUpDTO extends createZodDto(SignUpSchema) {}
 
 @Controller()
 export class UserController {
 	constructor(private userService: UserService) {}
 
+	@UsePipes(ZodValidationPipe)
 	@Post('signin')
-	login(@Body() userData: { email: string; password: string }) {
+	login(@Body() userData: SignInDTO) {
 		const { email, password } = userData;
-
 		return this.userService.login({ email, hash: password });
 	}
 
+	@UsePipes(ZodValidationPipe)
 	@Post('signup')
-	createUser(
-		@Body() userData: { email: string; name: string; password: string },
-	) {
+	createUser(@Body() userData: SignUpDTO) {
 		const { email, name, password } = userData;
 		try {
 			return this.userService.createUser({
