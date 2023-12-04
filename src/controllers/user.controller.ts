@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	UploadedFile,
+	UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import multerConfig from 'src/configs/multer-config';
 import { UserService } from 'src/services/user.service';
 
 @Controller()
@@ -35,5 +44,14 @@ export class UserController {
 		} catch (error) {
 			return error;
 		}
+	}
+
+	@Post('user/profile')
+	@UseInterceptors(FileInterceptor('image', multerConfig))
+	uploadImage(
+		@UploadedFile() file: Express.MulterS3.File,
+		@Body() user: { userid: string },
+	) {
+		return this.userService.updateProfilePic(user.userid, file);
 	}
 }

@@ -7,6 +7,9 @@ import { UserService } from './services/user.service';
 import { PrismaService } from './prisma.service';
 import { MessageController } from './controllers/message.controller';
 import { MessageService } from './services/message.service';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
 	imports: [],

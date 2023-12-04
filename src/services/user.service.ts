@@ -58,4 +58,15 @@ export class UserService {
 	async getUsers() {
 		return await this.prisma.user.findMany();
 	}
+
+	async updateProfilePic(userid: string, file: Express.MulterS3.File) {
+		return await this.prisma.user.update({
+			where: {
+				id: userid,
+			},
+			data: {
+				profile_url: file.location,
+			},
+		});
+	}
 }
