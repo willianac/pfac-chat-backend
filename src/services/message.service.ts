@@ -5,6 +5,7 @@ type CreateMessageDTO = {
 	senderId: string;
 	receiverId: string;
 	text: string;
+	imageUrl?: string;
 };
 
 type GetChatMessagesDTO = {
@@ -30,6 +31,7 @@ export class MessageService {
 					},
 				},
 				text: messageCreateInput.text,
+				image_url: messageCreateInput.imageUrl,
 			},
 		});
 		return message;
